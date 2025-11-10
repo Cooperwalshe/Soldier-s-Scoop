@@ -327,15 +327,12 @@
             `).join('');
         }
 
-        /** * Simulates the newsletter form submission.
-         * Dynamically finds the email input based on the current active view.
-         */
+        /** Sends the email data to a form-to-email service endpoint. */
         function handleSubscribe(event) {
             event.preventDefault();
             
-            // Get the appropriate input element based on the current active view
+            // 1. Get the appropriate input element based on the current active view
             let emailInput = null;
-
             if (currentView === 'home') {
                 emailInput = document.getElementById('email-input');
             } else if (currentView === 'detail') {
@@ -345,19 +342,54 @@
             const email = emailInput ? emailInput.value : null;
 
             if (email) {
-                // In a real application, you would send this email to a backend service.
-                console.log('Subscription submitted for:', email);
+                // === IMPORTANT: FORM-TO-EMAIL SERVICE ENDPOINT ===
+                // This URL is set up for FormSubmit.co, which is a simple service for POSTing form data to an email address.
+                // The recipient email is HARDCODED here based on your request: cwalshe21@gmail.com
+                const formToEmailEndpoint = 'https://formsubmit.co/cwalshe21@gmail.com'; 
+
+                const subscriberData = {
+                    email: email,
+                    source: currentView === 'home' ? 'Hero Section' : 'Detail Page',
+                    timestamp: new Date().toISOString(),
+                    _subject: "New Soldier's Scoop Subscription!" // Field for FormSubmit/Formspree subject
+                };
+
+                // Perform the POST request to your email service
+                fetch(formToEmailEndpoint, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json' 
+                    },
+                    body: JSON.stringify(subscriberData)
+                })
+                .then(response => {
+                    // Check for FormSubmit success status (usually 200 or 202)
+                    if (response.ok || response.status === 200 || response.status === 202) {
+                        showMessage(
+                            "Subscription Confirmed!",
+                            `Success! Your subscription for **${email}** has been sent to **cwalshe21@gmail.com**. You may need to check the FormSubmit.co inbox for the initial activation email.`
+                        );
+                    } else {
+                        // Handle server-side errors from the external service
+                         showMessage(
+                            "Submission Error", 
+                            `The form submission failed (Status: ${response.status}). The endpoint is set to **cwalshe21@gmail.com**; please ensure this address is activated with FormSubmit.co.`
+                        );
+                    }
+                    
+                    // Clear the form
+                    if (emailInput) {
+                        emailInput.value = '';
+                    }
+
+                })
+                .catch(error => {
+                    // Handle network errors
+                    console.error('Network or Fetch Error:', error);
+                    showMessage("Network Error", "Could not connect to the subscription service. Check your internet connection.");
+                });
                 
-                // Show success message
-                showMessage(
-                    "Subscription Confirmed!",
-                    `Thank you for subscribing, ${email}! You'll receive your first weekly update soon from Soldier's Scoop.`
-                );
-                
-                // Clear the form
-                if (emailInput) { // Ensure emailInput exists before trying to clear its value
-                    emailInput.value = '';
-                }
             } else {
                 showMessage("Error", "Please enter a valid email address.");
             }
