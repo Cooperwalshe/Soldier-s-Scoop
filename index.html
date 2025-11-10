@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soldier's Scoop - Newsletter & Content Hub</title>
+    <!-- Load Tailwind CSS --><script src="https://cdn.tailwindcss.com"></script>
+    <!-- Configure Tailwind for Inter Font and American Flag Theme --><style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fb; /* Light background for contrast */
+            color: #333; /* Darker text for readability */
+        }
+        /* American Flag Theme Colors */
+        .theme-blue { color: #0A3161; } /* Dark Blue */
+        .theme-red { color: #BF0A30; }  /* Deep Red */
+        .bg-theme-blue { background-color: #0A3161; }
+        .bg-theme-red { background-color: #BF0A30; }
+        .text-theme-blue { color: #0A3161; }
+        .text-theme-red { color: #BF0A30; }
+        .hover-bg-theme-blue:hover { background-color: #082a52; }
+        .hover-bg-theme-red:hover { background-color: #a3072a; }
+        .border-theme-blue-light { border-color: #cfe1ef; }
+        .bg-theme-blue-light { background-color: #e9f2f8; }
+
+        /* Custom styles for the article cards (More defined border) */
+        .article-card {
+            transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+            border: 4px solid #e5e7eb; /* Thicker gray border */
+        }
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px -10px rgba(45, 55, 72, 0.15);
+            border-color: #BF0A30; /* Red border on hover */
+        }
+
+        /* Simplified Hero section (Solid Blue, no pattern) */
+        .hero-bg-pattern {
+            background-color: #0A3161; /* Solid Dominant Blue background */
+        }
+
+        /* Styling for the striped footer */
+        .striped-footer {
+            height: 10px; /* Height of one stripe */
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+    <div id="app" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-0 pb-12">
+        
+        <!-- Header / Logo (Blue background, White text) --><header class="flex justify-between items-center py-6 bg-theme-blue mb-8 px-4 sm:px-6 lg:px-8 -mx-4 sm:-mx-6 lg:-mx-8 shadow-lg">
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">
+                Soldier's <span class="text-white">Scoop</span>
+            </h1>
+            <button onclick="showHome()" class="text-white hover:text-gray-200 font-medium transition duration-150 ease-in-out">
+                Home
+            </button>
+        </header>
+
+        <!-- Notification Message Box --><div id="message-box" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-xl shadow-2xl max-w-sm w-full transform transition-all duration-300 scale-100">
+                <h3 class="text-xl font-bold text-gray-900 mb-3" id="message-title"></h3>
+                <p class="text-gray-600 mb-6" id="message-content"></p>
+                <button onclick="hideMessage()" class="w-full bg-theme-blue text-white py-2 rounded-lg font-semibold hover-bg-theme-blue transition duration-150">
+                    Got It
+                </button>
+            </div>
+        </div>
+
+        <!-- Home View: Hero and Article List --><div id="home-view">
+            
+            <!-- Hero and Newsletter Signup (Solid Blue) --><section class="bg-theme-blue p-8 sm:p-12 rounded-3xl shadow-xl mb-12 hero-bg-pattern text-white">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h2 class="text-5xl font-extrabold leading-tight mb-4">
+                        Your weekly briefing on Life in the Military
+                    </h2>
+                    <p class="text-xl text-gray-200 mb-8">
+                        Written by an <strong>active duty service member</strong> for the community. Join thousands of military families and get the <strong>Soldier's Scoop</strong> delivered straight to your inbox every Friday.
+                    </p>
+                    
+                    <!-- Newsletter Form (Home) --><form id="subscribe-form" class="flex flex-col sm:flex-row gap-4 justify-center">
+                        <input
+                            type="email"
+                            id="email-input"
+                            placeholder="Personal Email"
+                            required
+                            class="flex-grow px-5 py-3 border border-gray-300 rounded-xl focus:ring-theme-red focus:border-theme-red text-lg shadow-sm text-gray-800"
+                        >
+                        <button
+                            type="submit"
+                            class="w-full sm:w-auto px-8 py-3 bg-theme-red text-white text-lg font-semibold rounded-xl shadow-xl hover-bg-theme-red transition duration-150 ease-in-out transform hover:scale-[1.01]"
+                        >
+                            Subscribe Now
+                        </button>
+                    </form>
+                    
+                    <p class="text-sm text-gray-300 mt-4">No spam, just mission-critical insights. Unsubscribe anytime.</p>
+                </div>
+            </section>
+
+            <!-- Featured Articles Section Title --><h2 class="text-4xl font-extrabold text-gray-900 mb-8 mt-12 text-center sm:text-left">
+                Featured Insights
+            </h2>
+            
+            <!-- Article List Grid --><section id="article-list-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Articles will be injected here by JavaScript --></section>
+        </div>
+
+        <!-- Article Detail View (Hidden by Default) --><div id="detail-view" class="hidden">
+            <button 
+                onclick="showHome()" 
+                class="inline-flex items-center text-theme-red hover:text-theme-blue transition duration-150 mb-8 group font-semibold"
+            >
+                <!-- Lucide Arrow Left Icon (Inline SVG) --><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 mr-2 group-hover:-translate-x-1 transition duration-150"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                Back to all Articles
+            </button>
+
+            <article class="bg-white p-6 sm:p-10 rounded-3xl shadow-xl">
+                <h2 id="article-detail-title" class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-4 leading-tight"></h2>
+                <div class="flex items-center space-x-4 text-gray-500 mb-8">
+                    <span id="article-detail-author" class="font-medium"></span>
+                    <span>&bull;</span>
+                    <span id="article-detail-date"></span>
+                </div>
+                <img id="article-detail-image" class="w-full h-80 object-cover rounded-2xl mb-8 shadow-lg" alt="Article image">
+                <div id="article-detail-content" class="prose prose-lg max-w-none text-gray-700">
+                    <!-- Dynamic content will be injected here --></div>
+
+                <!-- Newsletter Form (Detail View) --><section class="mt-10 p-6 bg-theme-blue-light rounded-2xl border border-theme-blue-light">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-3">Don't Miss the Next Scoop!</h3>
+                    <p class="text-gray-700 mb-5">
+                        Enjoyed this article? The Scoop is written by an <strong>active duty service member</strong>—subscribe now to get weekly financial and family insights directly to your inbox.
+                    </p>
+                    <form id="subscribe-form-detail" class="flex flex-col sm:flex-row gap-4">
+                        <input
+                            type="email"
+                            id="email-input-detail"
+                            placeholder="Personal Email"
+                            required
+                            class="flex-grow px-5 py-3 border border-gray-300 rounded-xl focus:ring-theme-red focus:border-theme-red text-lg shadow-sm"
+                        >
+                        <button
+                            type="submit"
+                            class="w-full sm:w-auto px-6 py-3 bg-theme-red text-white text-lg font-semibold rounded-xl shadow-md hover-bg-theme-red transition duration-150"
+                        >
+                            Subscribe
+                        </button>
+                    </form>
+                </section>
+            </article>
+        </div>
+
+    </div>
+
+    <!-- Patriotic Striped Footer (Outside max-w-7xl container) -->
+    <footer class="mt-12">
+        <div class="flex flex-col">
+            <!-- RWB Stripes -->
+            <div class="flex">
+                <div class="bg-theme-red striped-footer w-1/3"></div>
+                <div class="bg-white striped-footer w-1/3"></div>
+                <div class="bg-theme-blue striped-footer w-1/3"></div>
+            </div>
+            <div class="flex">
+                <div class="bg-white striped-footer w-1/3"></div>
+                <div class="bg-theme-red striped-footer w-1/3"></div>
+                <div class="bg-white striped-footer w-1/3"></div>
+            </div>
+            <div class="flex">
+                <div class="bg-theme-blue striped-footer w-1/3"></div>
+                <div class="bg-white striped-footer w-1/3"></div>
+                <div class="bg-theme-red striped-footer w-1/3"></div>
+            </div>
+            
+            <!-- Standard Footer Content -->
+            <div class="bg-gray-800 text-white py-8 px-4 sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto text-center">
+                    <h3 class="text-2xl font-extrabold mb-2">Soldier's Scoop</h3>
+                    <p class="text-gray-400 text-sm">Serving the military community with financial and family insights.</p>
+                    <p class="text-gray-500 text-xs mt-4">&copy; 2025 Soldier's Scoop. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA (Placeholder Articles) ---
+        const ARTICLES = [
+            {
+                id: 'veterans-day-deals',
+                title: "Veteran's Day Deals: The Ultimate Guide to 2025 Discounts",
+                summary: "Don't miss out! We break down the best military and veteran discounts available this Veteran's Day, from retail to travel and dining.",
+                author: 'Sergeant First Class (Ret.) Ben Carter',
+                date: 'November 10, 2025',
+                image: 'https://placehold.co/600x400/BF0A30/ffffff?text=Veteran+Deals', // Red placeholder
+                content: `
+                    <p>Veteran's Day is a crucial opportunity for businesses to honor military service through significant discounts, but maximizing these benefits requires preparation and knowledge. This guide breaks down how to efficiently navigate the deals available across three major sectors, ensuring you get the most value from your service recognition.</p>
+                    
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">Retail & E-Commerce Savings</h3>
+                    <p>Major retailers, spanning from electronics giants to home improvement stores and apparel brands, typically offer between 15% to 40% off total purchases. The critical step here is verification. Most big-box stores now rely on third-party verification systems like **ID.me** or **SheerID** for online purchases, or require a physical military ID (CAC, VHIC, or state-issued Veteran designation) for in-store transactions. Always create or update your digital verification accounts beforehand. Pay close attention to exclusions; items like gift cards, select high-end electronics, or doorbusters may be exempt from the military discount. Planning your big-ticket purchases around this holiday can lead to hundreds of dollars in savings, especially when combining the military discount with general holiday sales.</p>
+                    
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">Maximizing Travel and Hospitality Perks</h3>
+                    <p>Travel discounts are often the most overlooked. Airlines frequently waive baggage fees or offer special military fares. Rental car companies provide deeply discounted rates, and major hotel chains offer year-round military pricing that can be exceptionally generous around Veteran's Day. If you are planning a family trip, booking in advance is essential. When checking in, be sure to mention your military status even if you booked a standard rate, as staff can sometimes adjust the price or offer complimentary upgrades as a courtesy. Remember that many theme parks and recreational attractions offer free or significantly reduced admission for veterans and their families specifically on this holiday, making it an excellent time for a local 'staycation' or day trip.</p>
+                    
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">Dining, Service, and Financial Resources</h3>
+                    <p>The dining sector is famous for offering free meals or substantial discounts (often 50% off or more) on Veterans Day. These offers are usually one-day only and require proof of service. Before visiting, always call ahead to confirm the exact details of the offer, as rules can vary by franchise location. Beyond retail and food, many financial institutions, like credit unions and banks, often waive fees for military members or offer special refinancing rates in November. Additionally, look for free professional services offered by local businesses, such as car washes, oil changes, or even legal consultations. These smaller, community-driven deals often provide substantial non-monetary value that contributes significantly to overall savings and community appreciation.</p>
+                `
+            },
+            {
+                id: 'govt-shutdown-pay',
+                title: 'Government Shutdowns: What Happens to Military Pay and Benefits?',
+                summary: 'An essential guide explaining the immediate and long-term effects of a government shutdown on active duty pay, reserves, and veterans benefits.',
+                author: 'Finance Specialist Ava Sharma',
+                date: 'October 28, 2025',
+                image: 'https://placehold.co/600x400/0A3161/ffffff?text=Pay+Effect', // Blue placeholder
+                content: `
+                    <p>A government shutdown, caused by Congress failing to pass necessary appropriations bills, creates immediate financial uncertainty for millions, especially those in uniform. While the Department of Defense is considered essential, meaning personnel must continue working, their pay is directly dependent on funding that a shutdown suspends. Understanding the timeline and the impact on various benefits is crucial for military financial planning.</p>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">The Immediate Impact on Active Duty Pay</h3>
+                    <p>For active duty servicemembers, a shutdown means that their regular paychecks—due on the 1st and 15th of the month—will be delayed. While they continue to work under the Antideficiency Act, the Treasury cannot legally issue pay without an appropriation. Historically, Congress passes a separate piece of legislation to ensure **retroactive pay** is delivered once the government reopens. This means the money is eventually received, but the delay can last for weeks, causing immediate liquidity crises for families reliant on the bi-weekly schedule. In the interim, military aid societies (like the Army Emergency Relief or Navy-Marine Corps Relief Society) typically stand up interest-free loan programs to bridge the gap.</p>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">Veterans Benefits and GI Bill Concerns</h3>
+                    <p>Fortunately, many critical benefits are funded through mandatory spending or prior appropriations and are usually unaffected. VA disability compensation and military retirement checks generally continue on time. Similarly, Post-9/11 GI Bill payments, including monthly housing allowance (MHA) and tuition payments to schools, are typically unaffected because they fall under "unobligated funds." However, non-essential functions at the VA, such as claims processing for new benefits, may slow down dramatically. Furthermore, staff shortages may impact the availability of non-critical medical appointments or administrative services at VA medical centers.</p>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">Contingency Planning and Mitigation Strategies</h3>
+                    <p>The best defense against a pay delay is a robust emergency fund. Military financial planners recommend having at least one month's worth of expenses liquid and accessible. Beyond savings, families should communicate proactively. If a shutdown appears imminent, contact landlords, mortgage companies, and utility providers immediately. Many creditors, understanding the unique nature of military pay, have established policies to grant forbearance or delay payment deadlines during a lapse in appropriations. Do not wait for the payment date to pass; contact them as soon as the threat of a shutdown arises. This proactive communication can prevent late fees, maintain credit scores, and significantly reduce financial anxiety during the temporary delay.</p>
+                `
+            },
+            {
+                id: 'marriage-on-deployment',
+                title: 'The Deployment Dynamic: Tips for a Stronger Military Marriage',
+                summary: 'Expert advice and communication strategies for service members and spouses to maintain a healthy relationship through the challenges of deployment.',
+                author: 'Marriage and Family Therapist Dr. Ryan Lee',
+                date: 'October 21, 2025',
+                image: 'https://placehold.co/600x400/BF0A30/ffffff?text=Deployment+Tips', // Red placeholder
+                content: `
+                    <p>Deployment is a crucible for military marriages, testing the foundations of trust, communication, and mutual reliance under extreme pressure. While the separation itself is difficult, managing the 'asymmetric' nature of life—one spouse is dealing with operational stress, the other with 24/7 home-front logistics—is often the greatest hurdle. Intentional planning and empathy are the keys to not just surviving, but strengthening the marital bond during these periods.</p>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">Pre-Deployment Preparation and Setting Expectations</h3>
+                    <p>The success of a deployment is often determined before the service member even leaves. Create a "battle book" detailing all critical information: bank accounts, utility contacts, insurance policies, and passwords. More importantly, establish a **communication contract**. Discuss realistic call schedules, preferred methods (email, text, video), and, critically, what kind of information should be shared. The deployed member needs to know the spouse is safe but should be shielded from non-urgent crises. The spouse at home needs assurance, not just mission details. A power of attorney and updated wills are non-negotiable legal steps to take before the deployment begins.</p>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">Sustaining Communication and Emotional Intimacy</h3>
+                    <p>During the deployment, communication quality trumps quantity. Short, shallow exchanges can sometimes create more distance than silence. When connection is possible, aim for deep, intentional conversations. Ask questions beyond the surface: "What made you smile today?" or "What's the hardest decision you've had to make this week?" For the spouse on the home front, use resources like the Family Readiness Group (FRG) or chaplains. Resist the urge to bottle up stress, as this can lead to resentment that explodes upon homecoming. Send physical letters or small packages; tangible connections hold immense emotional weight in a digital world.</p>
+
+                    <h3 class="text-2xl font-semibold mt-6 mb-3">Reintegration: The Forgotten Phase</h3>
+                    <p>The return home, known as **reintegration**, is often as challenging as the separation itself. The spouse at home has established a highly efficient, single-parent routine, while the service member is used to a structured, mission-focused environment. Expect a period of awkward adjustment. The returning spouse needs to be reintroduced to the family dynamic and should not be expected to immediately take over responsibilities. The spouse who stayed home must relinquish control gradually. It is vital to continue using the resources you relied on during deployment, such as counseling or community groups, to help navigate the blending of two radically different lifestyles back into one marriage. Patience, low expectations, and humor are the best tools for navigating this transition.</p>
+                `
+            }
+        ];
+
+        // --- STATE & UI FUNCTIONS ---
+        
+        const homeView = document.getElementById('home-view');
+        const detailView = document.getElementById('detail-view');
+        const listContainer = document.getElementById('article-list-container');
+        const messageBox = document.getElementById('message-box');
+        
+        let currentView = 'home';
+
+        /** Renders a message modal for feedback or errors */
+        function showMessage(title, content) {
+            document.getElementById('message-title').textContent = title;
+            document.getElementById('message-content').textContent = content;
+            messageBox.classList.remove('hidden');
+        }
+
+        /** Hides the message modal */
+        function hideMessage() {
+            messageBox.classList.add('hidden');
+        }
+
+        /** Switches the UI back to the main landing page/article list */
+        function showHome() {
+            currentView = 'home';
+            homeView.classList.remove('hidden');
+            detailView.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /** Switches the UI to the article detail page and populates it */
+        function showDetail(articleId) {
+            const article = ARTICLES.find(a => a.id === articleId);
+            if (!article) {
+                showMessage("Error", "Article not found.");
+                return;
+            }
+
+            // Populate the detail view with article data
+            document.getElementById('article-detail-title').textContent = article.title;
+            document.getElementById('article-detail-author').textContent = 'By ' + article.author;
+            document.getElementById('article-detail-date').textContent = article.date;
+            document.getElementById('article-detail-image').src = article.image;
+            document.getElementById('article-detail-image').alt = article.title;
+            document.getElementById('article-detail-content').innerHTML = article.content;
+
+            // Switch view
+            currentView = 'detail';
+            homeView.classList.add('hidden');
+            detailView.classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        /** Renders the list of article cards on the main page */
+        function renderArticles() {
+            listContainer.innerHTML = ARTICLES.map(article => `
+                <div 
+                    class="article-card bg-white rounded-2xl overflow-hidden shadow-lg border border-theme-blue-light cursor-pointer hover:border-theme-red"
+                    onclick="showDetail('${article.id}')"
+                >
+                    <img 
+                        src="${article.image}" 
+                        alt="${article.title}" 
+                        class="w-full h-48 object-cover"
+                        onerror="this.onerror=null; this.src='https://placehold.co/600x400/cccccc/333333?text=Image+Missing';"
+                    >
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold text-gray-900 mb-2">${article.title}</h3>
+                        <p class="text-gray-600 mb-4">${article.summary}</p>
+                        <span class="text-sm text-theme-blue font-semibold inline-flex items-center">
+                            Read Article
+                            <!-- Lucide Arrow Right Icon (Inline SVG) --><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 ml-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /** * Simulates the newsletter form submission.
+         * Dynamically finds the email input based on the current active view.
+         */
+        function handleSubscribe(event) {
+            event.preventDefault();
+            
+            // Get the appropriate input element based on the current active view
+            let emailInput = null;
+
+            if (currentView === 'home') {
+                emailInput = document.getElementById('email-input');
+            } else if (currentView === 'detail') {
+                emailInput = document.getElementById('email-input-detail');
+            }
+            
+            const email = emailInput ? emailInput.value : null;
+
+            if (email) {
+                // In a real application, you would send this email to a backend service.
+                console.log('Subscription submitted for:', email);
+                
+                // Show success message
+                showMessage(
+                    "Subscription Confirmed!",
+                    `Thank you for subscribing, ${email}! You'll receive your first weekly update soon from Soldier's Scoop.`
+                );
+                
+                // Clear the form
+                if (emailInput) { // Ensure emailInput exists before trying to clear its value
+                    emailInput.value = '';
+                }
+            } else {
+                showMessage("Error", "Please enter a valid email address.");
+            }
+        }
+
+        // --- INITIALIZATION ---
+
+        window.onload = function() {
+            renderArticles();
+            
+            // Attach listener to home form
+            const formHome = document.getElementById('subscribe-form');
+            formHome.addEventListener('submit', handleSubscribe);
+
+            // Attach listener to detail form
+            const formDetail = document.getElementById('subscribe-form-detail');
+            // Check if the element exists before adding listener (it should, but good practice)
+            if(formDetail) {
+                formDetail.addEventListener('submit', handleSubscribe);
+            }
+        };
+    </script>
+</body>
+</html>
